@@ -1,6 +1,14 @@
 # Currency Conversion Micro Service
 Run com.in28minutes.microservices.currencyconversionservice.CurrencyConversionServiceApplication as a Java Application.
 
+## Build image:
+
+docker build -t peterbnz/currency-conversion:0.0.1.Release .
+
+## Run image:
+
+docker run -p 8100:8000 --name=currency-exchange peterbnz/currency-conversion:0.0.1.Release 
+
 ## Resources
 
 - http://localhost:8100/currency-conversion/from/EUR/to/INR/quantity/10

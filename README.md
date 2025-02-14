@@ -2,6 +2,49 @@
 
 These simple microservices enable us to **focus on** learning the tools - Docker, Kubernetes, CI, CD and  build the infrastructure needed around typical microservices.
 
+1. Build Docker image for currency-exchange-service
+
+docker build -t peterbnz/currency-exchange:0.0.1.Release .
+
+2. Run and test currency-exchange-service
+
+docker run -p 8000:8000 --name=currency-exchange peterbnz/currency-exchange:0.0.1.Release
+
+http://localhost:8000/currency-exchange/from/EUR/to/INR
+
+3. Build Docker image for currency-conversion-service
+
+docker build -t peterbnz/currency-conversion:0.0.1.Release .
+
+4. Run and test currency-conversion-service
+
+docker run -p 8000:8000 --name=currency-exchange peterbnz/currency-conversion:0.0.1.Release
+
+http://localhost:8100/currency-conversion/from/EUR/to/INR/quantity/10
+
+5. Docker command to link currency-conversion-service and currency-exchange-service
+By default containers are added to the bridge network. Host networking is only supported on linux. 
+
+docker netwrok ls
+docker network inspect bridge
+
+docker run -d -p 8100:8100 --name=currency-conversion --link currency-exchange peterbnz/currency-conversion:0.0.1.Release
+
+6. Run and test currency-exchange-service can communicate with currency-exchange-service
+
+docker run -d -p 8100:8100 
+  --env CURRENCY_EXCHANGE_URI=http://currency-exchange:8000 
+  --link currency-exchange
+  peterbnz/currency-conversion:0.0.1-SNAPSHOT
+
+
+7. Create a custom network
+
+docker network create currency-network
+
+docker run -p 8000:8000 --name=currency-exchange --network=currency-network peterbnz/currency-exchange:0.0.1.Release
+
+
 ### Currency Exchange Service
 
 If you ask it the value of 1 USD in INR, or 1 Australian Dollar in INR, the Currency Exchange Service answers 
